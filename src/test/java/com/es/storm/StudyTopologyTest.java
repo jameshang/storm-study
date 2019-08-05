@@ -8,7 +8,7 @@ public class StudyTopologyTest {
     public void testSubmitLocalTopology() throws Exception {
         StudyTopology studyTopology = new StudyTopology();
         studyTopology.submitLocalTopology("words");
-        Thread.sleep(10000);
+        Thread.sleep(30000);
 //        System.in.read();
     }
 

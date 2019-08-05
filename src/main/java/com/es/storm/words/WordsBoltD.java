@@ -2,6 +2,7 @@ package com.es.storm.words;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -17,6 +18,7 @@ public class WordsBoltD extends BaseRichBolt {
     private       TopologyContext      context;
     private       OutputCollector      collector;
     private final Map<String, Integer> totalMap = new LinkedHashMap<>();
+    private final Random               r        = new Random();
 
     @Override
     public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
@@ -34,7 +36,14 @@ public class WordsBoltD extends BaseRichBolt {
         String fruit = input.getStringByField("fruit");
         int total = input.getIntegerByField("total");
         totalMap.put(fruit, totalMap.get(fruit) + total);
-        log.info("{}", totalMap);
+//        log.info("{}", totalMap);
+        if (r.nextBoolean()) {
+            collector.ack(input);
+            log.info("Send ack {}", input);
+        } else {
+            collector.fail(input);
+            log.info("Send fail {}", input);
+        }
     }
 
     @Override

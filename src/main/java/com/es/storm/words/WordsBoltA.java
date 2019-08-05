@@ -1,6 +1,7 @@
 package com.es.storm.words;
 
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -15,10 +16,9 @@ import org.slf4j.LoggerFactory;
 public class WordsBoltA extends BaseRichBolt {
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private Map             stormConf;
-    private TopologyContext context;
-    private OutputCollector collector;
-
+    private       Map             stormConf;
+    private       TopologyContext context;
+    private       OutputCollector collector;
     private int total;
 
     @Override
@@ -33,16 +33,19 @@ public class WordsBoltA extends BaseRichBolt {
     public void execute(Tuple input) {
         String fruit = input.getStringByField("fruit");
         if (!"Apple".equals(fruit)) {
+            collector.ack(input);
             return;
         }
         int quantity = input.getIntegerByField("quantity");
         total += quantity;
-        collector.emit("FruitCount", new Values("Apple", total));
-        log.info("fruit={}, total={}", fruit, total);
+        collector.emit("FruitCount", input, new Values("Apple", total));
+        collector.ack(input);
+//        log.info("fruit={}, total={}", fruit, total);
     }
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         declarer.declareStream("FruitCount", new Fields("fruit", "total"));
     }
+
 }

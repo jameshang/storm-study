@@ -17,7 +17,7 @@ public class WordsBoltC extends BaseRichBolt {
     private Map             stormConf;
     private TopologyContext context;
     private OutputCollector collector;
-    private int total;
+    private int             total;
 
     @Override
     public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
@@ -31,12 +31,14 @@ public class WordsBoltC extends BaseRichBolt {
     public void execute(Tuple input) {
         String fruit = input.getStringByField("fruit");
         if (!"Guava".equals(fruit)) {
+            collector.ack(input);
             return;
         }
         int quantity = input.getIntegerByField("quantity");
         total += quantity;
-        collector.emit("FruitCount", new Values("Guava", total));
-        log.info("fruit={}, total={}", fruit, total);
+        collector.emit("FruitCount", input, new Values("Guava", total));
+        collector.ack(input);
+//        log.info("fruit={}, total={}", fruit, total);
     }
 
     @Override
