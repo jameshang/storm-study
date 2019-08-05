@@ -31,12 +31,14 @@ public class WordsBoltB extends BaseRichBolt {
     public void execute(Tuple input) {
         String fruit = input.getStringByField("fruit");
         if (!"Grape".equals(fruit)) {
+            collector.ack(input);
             return;
         }
         int quantity = input.getIntegerByField("quantity");
         total += quantity;
-        collector.emit("FruitCount", new Values("Grape", total));
-        log.info("fruit={}, total={}", fruit, total);
+        collector.emit("FruitCount", input, new Values("Grape", total));
+        collector.ack(input);
+//        log.info("fruit={}, total={}", fruit, total);
     }
 
     @Override

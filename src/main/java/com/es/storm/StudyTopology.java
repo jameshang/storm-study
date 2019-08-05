@@ -29,13 +29,13 @@ public class StudyTopology {
         /*DGT*/
 
         builder.setSpout("wordsDataSpout", new WordsDataSpout(), 1);
-        builder.setBolt("wordsBoltA", new WordsBoltA(), 1).localOrShuffleGrouping("wordsDataSpout", "WordA");
-        builder.setBolt("wordsBoltB", new WordsBoltB(), 1).localOrShuffleGrouping("wordsDataSpout", "WordB");
-        builder.setBolt("wordsBoltC", new WordsBoltC(), 1).localOrShuffleGrouping("wordsDataSpout", "WordC");
+        builder.setBolt("wordsBoltA", new WordsBoltA(), 1).shuffleGrouping("wordsDataSpout", "Fruit");
+        builder.setBolt("wordsBoltB", new WordsBoltB(), 1).shuffleGrouping("wordsDataSpout", "Fruit");
+        builder.setBolt("wordsBoltC", new WordsBoltC(), 1).shuffleGrouping("wordsDataSpout", "Fruit");
         builder.setBolt("wordsBoltD", new WordsBoltD(), 1)
-                .localOrShuffleGrouping("wordsBoltA", "FruitCount")
-                .localOrShuffleGrouping("wordsBoltB", "FruitCount")
-                .localOrShuffleGrouping("wordsBoltC", "FruitCount");
+                .shuffleGrouping("wordsBoltA", "FruitCount")
+                .shuffleGrouping("wordsBoltB", "FruitCount")
+                .shuffleGrouping("wordsBoltC", "FruitCount");
         return builder.createTopology();
     }
 
